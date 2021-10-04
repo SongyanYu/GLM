@@ -483,7 +483,7 @@ static int shear_production(int Mixer_Count, int *_Epi_botmLayer, int *_Meta_top
     Vol_Hypl = Lake[Meta_topLayer].Vol1;
     Epi_Thick = (Vol_Epi/(Lake[Meta_topLayer].LayerArea+Lake[surfLayer].LayerArea))*2.0;
     Hypl_Thick = (Vol_Hypl/Lake[Meta_topLayer].LayerArea)*2.0;
-    IntWaveSpeed = sqrt((fabs(gPrimeTwoLayer)*Epi_Thick*Hypl_Thick)/(Epi_Thick+Hypl_Thick));
+    IntWaveSpeed = sqrt((fabs(gPrimeTwoLayer)*Epi_Thick*Hypl_Thick)/(Epi_Thick+Hypl_Thick)); //# Equation (48)
 
     /**************************************************************************
      * Adjust momentum for water entrained by the deepening process           *
@@ -503,7 +503,7 @@ static int shear_production(int Mixer_Count, int *_Epi_botmLayer, int *_Meta_top
      *      2) area = pi/4 * Length * Width                                   *
      *      3) ratio Length:Width at thermocline is same as at crest          *
      **************************************************************************/
-    LengthAtThermo = sqrt(Lake[Meta_topLayer].LayerArea*4.0/Pi*(LenAtCrest/WidAtCrest));
+    LengthAtThermo = sqrt(Lake[Meta_topLayer].LayerArea*4.0/Pi*(LenAtCrest/WidAtCrest)); //# equation between E(47) and E(48)
 
     /**************************************************************************
      * Check momentum time counters                                           *
@@ -516,18 +516,18 @@ static int shear_production(int Mixer_Count, int *_Epi_botmLayer, int *_Meta_top
      **************************************************************************/
     if (Half_Seiche_Period <= zero) {
          AED_REAL EffectiveForceTime;
-         Half_Seiche_Period = LengthAtThermo / (2.0 * IntWaveSpeed * SecsPerHr);
+         Half_Seiche_Period = LengthAtThermo / (2.0 * IntWaveSpeed * SecsPerHr); //# Equation between E(47) and E(48)
          EffectiveForceTime = Half_Seiche_Period;
          if (U_star > zero) {
             AED_REAL Lake_Depth = Epi_Thick+Hypl_Thick;
-            AED_REAL dt_damp = 2.0*(Lake_Depth/tdfac)*(Lake_Depth/U_star_sqr) *
+            AED_REAL dt_damp = 2.0*(Lake_Depth/tdfac)*(Lake_Depth/U_star_sqr) *  //# Should be Equation (50), but a bit different
                         (Hypl_Thick/Epi_Thick) *
                         pow((gPrimeTwoLayer*Epi_Thick*Hypl_Thick/Lake_Depth), 0.25) /
                         (sqrt(2.0*LengthAtThermo)*SecsPerHr)*sqrt(Visc);
             EffectiveForceTime = 1.59 * Half_Seiche_Period;
             if (dt_damp/Half_Seiche_Period < 10.0)
                 // Add damping factor to effective time
-                EffectiveForceTime = (1.0+ 0.59 *(1.0-(1/cosh(dt_damp/Half_Seiche_Period-1.0))))*Half_Seiche_Period;
+                EffectiveForceTime = (1.0+ 0.59 *(1.0-(1/cosh(dt_damp/Half_Seiche_Period-1.0))))*Half_Seiche_Period;  //# Equation (47)
          }
          Time_start_shear = Time_count_sim;
          Time_count_end_shear = Time_start_shear + EffectiveForceTime;
@@ -577,7 +577,7 @@ static int shear_production(int Mixer_Count, int *_Epi_botmLayer, int *_Meta_top
     del_u = u_avg - u_avg_old;
 
     //# K-H length scales (deltaKH and del_deltaKH) for shear production
-    del_deltaKH = 2.0 * coef_mix_KH * u_avg * del_u / gPrimeTwoLayer;
+    del_deltaKH = 2.0 * coef_mix_KH * u_avg * del_u / gPrimeTwoLayer;  //# Equation below E(51)
     deltaKH     = coef_mix_KH * u_avg * u_avg / gPrimeTwoLayer;
     if (deltaKH < 1.0E-10) deltaKH = 0.0;
     if (del_deltaKH < 1.0E-10) del_deltaKH = 0.0;
