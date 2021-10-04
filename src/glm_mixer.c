@@ -114,10 +114,10 @@ static AED_REAL Ssum;        //# Mean Salinity of cumulative volume of mixed lay
 static const AED_REAL half = 0.500;
 
 extern AED_REAL coef_mix_KH,     //# Kelvin-Helmholtz billowing effects
-                coef_mix_conv,   //# convective overturn
-                coef_wind_stir,  //# wind stirring
-                coef_mix_shear,  //# shear efficiency
-                coef_mix_turb;   //# unsteady effects
+                coef_mix_conv,   //# convective overturn (C_K in equation 41)
+                coef_wind_stir,  //# wind stirring (C_w in equation 41)
+                coef_mix_shear,  //# shear efficiency (C_s in equation 41)
+                coef_mix_turb;   //# unsteady effects (C_t in equation 42)
 
 /*============================================================================*/
 /* These are defined here as constants, the local versions in any subroutine  *
