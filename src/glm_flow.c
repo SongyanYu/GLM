@@ -204,7 +204,7 @@ void do_single_outflow(AED_REAL HeightOfOutflow, AED_REAL flow, OutflowDataType 
             if (Delta_V[0] >= Lake[0].LayerVol)
                 Delta_V[0] = Lake[0].LayerVol - 1.0;
             Delta_V[0] = 0.9 * Lake[0].LayerVol;   //# This line seems to me an error when Delta_V[0] was originally < 0.9 * Lake[0].LayerVol.
-            //# correction for the above if.
+            //# SY: correction for the above if.
             //# if (Delta_V[0] >= (0.9 * Lake[0].LayerVol))
             //#	    Delta_V[0] = MIN( (0.9 * Lake[0].LayerVol), Lake[0].LayerVol - 1.0)
         } else {
@@ -253,11 +253,15 @@ void do_single_outflow(AED_REAL HeightOfOutflow, AED_REAL flow, OutflowDataType 
                 if (Viscos <= zero) Viscos = Visc;
                 //# Grashof number (Eq. x in GLM manual)
                 Grashof = Nsqrd_outflow * sqr(LenAtOutflow) * sqr(LenAtOutflow) / sqr(Viscos);
+				//# SY: the Grashof calculation is different from the proposed equation in the GMD paper (Eq. 69).
                 flag = TRUE;
 
                 if (!ILP) {
                     //# Point sink case
-                    F3 = Q_outf/(sqrt(Nsqrd_outflow)*LenAtOutflow*sqr(LenAtOutflow));
+                    F3 = Q_outf/(sqrt(Nsqrd_outflow)*LenAtOutflow*sqr(LenAtOutflow)); 
+					//# SY: In the above calculation,
+					//# LenAtOutflow should be replaced with WidthAtOutflow.
+					//# see Eq. 68 in the GMD paper.
                     ThickOutflow = LenAtOutflow* pow(F3, (1.0/3.0));
                     if ((2.0 * ThickOutflow <= WidthAtOutflow) || (Outflow_half != 1)) {
                         R = F3*sqrt(Grashof);
